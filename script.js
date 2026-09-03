@@ -26,37 +26,42 @@ let prompts = [];
 let promptsLoaded = false;
 let promptsError = false;
 
-fetch("./prompts.json?v=" + Date.now(), {
+const PROMPTS_URL = "https://outofmycmftzone-ux.github.io/MOLLYWEEKEND-BINGO/prompts.json";
+
+async function loadPrompts() {
+try {
+const response = await fetch(PROMPTS_URL + "?t=" + Date.now(), {
 cache: "no-store"
-})
-.then(response => {
-if (!response.ok) {
-throw new Error("HTTP " + response.status);
-}
-
-return response.json();
-
-})
-.then(data => {
-if (!Array.isArray(data) || data.length === 0) {
-throw new Error("No prompts found");
-}
-
-prompts = data;
-promptsLoaded = true;
-promptsError = false;
-
-})
-.catch(error => {
-console.error("Failed to load prompts:", error);
-promptsLoaded = false;
-promptsError = true;
 });
 
-function startGame() {
+    if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+    }
 
+    const data = await response.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("Invalid prompts data");
+    }
+
+    prompts = data;
+    promptsLoaded = true;
+    promptsError = false;
+
+    console.log("Loaded prompts:", prompts.length);
+} catch (error) {
+    console.error("Prompt loading error:", error);
+    promptsLoaded = false;
+    promptsError = true;
+}
+
+}
+
+loadPrompts();
+
+function startGame() {
 const name1 =
-    document.getElementById("player1Name").value.trim() || "Player 1";
+document.getElementById("player1Name").value.trim() || "Player 1";
 
 const name2 =
     document.getElementById("player2Name").value.trim() || "Player 2";
@@ -86,14 +91,13 @@ document.getElementById("promptText").className = "prompt-hidden";
 
 document.getElementById("promptButtons").style.display = "none";
 document.getElementById("drawButton").style.display = "block";
-document.getElementById("gameStatus").textContent = "";
 
 if (promptsLoaded) {
     document.getElementById("gameStatus").textContent =
         prompts.length + " prompts loaded";
 } else if (promptsError) {
     document.getElementById("gameStatus").textContent =
-        "Unable to load prompts. Check your connection and reload the game.";
+        "Prompt loading failed. Reload the page.";
 } else {
     document.getElementById("gameStatus").textContent =
         "Loading prompts...";
@@ -111,11 +115,9 @@ getCurrentPlayer().name;
 }
 
 function getAvailableSquares() {
-
 const available = [];
 
 for (let i = 0; i < 25; i++) {
-
     if (!completed[i]) {
         available.push(i);
     }
@@ -126,11 +128,9 @@ return available;
 }
 
 function getLineProgress(index) {
-
 let highest = 0;
 
 for (const line of lines) {
-
     if (!line.includes(index)) {
         continue;
     }
@@ -138,11 +138,9 @@ for (const line of lines) {
     let count = 0;
 
     line.forEach(square => {
-
         if (completed[square]) {
             count++;
         }
-
     });
 
     if (count > highest) {
@@ -155,7 +153,6 @@ return highest;
 }
 
 function getSquareWeight(index) {
-
 const progress = getLineProgress(index);
 
 if (progress >= 4) {
@@ -175,7 +172,6 @@ return 1;
 }
 
 function chooseSquare() {
-
 const available = getAvailableSquares();
 
 if (available.length === 0) {
@@ -185,7 +181,6 @@ if (available.length === 0) {
 const weighted = [];
 
 available.forEach(index => {
-
     const weight = getSquareWeight(index);
     const copies = Math.max(1, Math.round(weight * 100));
 
@@ -201,9 +196,8 @@ return weighted[
 }
 
 function choosePrompt() {
-
 if (!promptsLoaded || prompts.length === 0) {
-    return null;
+return null;
 }
 
 let availablePrompts =
@@ -230,16 +224,11 @@ return prompt;
 }
 
 function drawPrompt() {
-
 if (!promptsLoaded) {
-
-    if (promptsError) {
-        document.getElementById("gameStatus").textContent =
-            "Prompts failed to load. Reload the game and try again.";
-    } else {
-        document.getElementById("gameStatus").textContent =
-            "Prompts are still loading. Please wait a moment.";
-    }
+document.getElementById("gameStatus").textContent =
+promptsError
+? "Prompt loading failed. Reload the page."
+: "Prompts are still loading...";
 
     return;
 }
@@ -257,8 +246,6 @@ if (square === -1) {
 const prompt = choosePrompt();
 
 if (!prompt) {
-    document.getElementById("gameStatus").textContent =
-        "No prompts are available.";
     return;
 }
 
@@ -284,9 +271,8 @@ document.getElementById("gameStatus").textContent = "";
 }
 
 function completeTask() {
-
 if (currentSquare === -1) {
-    return;
+return;
 }
 
 completed[currentSquare] = true;
@@ -295,19 +281,14 @@ currentSquare = -1;
 currentPrompt = null;
 
 document.getElementById("promptText").textContent = "?";
-document.getElementById("promptText").className =
-    "prompt-hidden";
+document.getElementById("promptText").className = "prompt-hidden";
 
-document.getElementById("promptButtons").style.display =
-    "none";
+document.getElementById("promptButtons").style.display = "none";
 
 renderBoard();
 
 if (checkWin()) {
-
-    document.getElementById("drawButton").style.display =
-        "none";
-
+    document.getElementById("drawButton").style.display = "none";
     return;
 }
 
@@ -316,26 +297,22 @@ currentPlayer =
 
 updateTurn();
 
-document.getElementById("drawButton").style.display =
-    "block";
+document.getElementById("drawButton").style.display = "block";
 
 }
 
 function skipTask() {
-
 if (currentSquare === -1) {
-    return;
+return;
 }
 
 currentSquare = -1;
 currentPrompt = null;
 
 document.getElementById("promptText").textContent = "?";
-document.getElementById("promptText").className =
-    "prompt-hidden";
+document.getElementById("promptText").className = "prompt-hidden";
 
-document.getElementById("promptButtons").style.display =
-    "none";
+document.getElementById("promptButtons").style.display = "none";
 
 renderBoard();
 
@@ -344,39 +321,30 @@ currentPlayer =
 
 updateTurn();
 
-document.getElementById("drawButton").style.display =
-    "block";
+document.getElementById("drawButton").style.display = "block";
 
 }
 
 function renderBoard() {
-
 const boardElement =
-    document.getElementById("board");
+document.getElementById("board");
 
 boardElement.innerHTML = "";
 
 for (let i = 0; i < 25; i++) {
-
     const cell =
         document.createElement("div");
 
     cell.className = "cell";
 
     if (completed[i]) {
-
         cell.classList.add("completed");
         cell.textContent = "✓";
-
     } else if (i === currentSquare) {
-
         cell.classList.add("selected");
         cell.textContent = "!";
-
     } else {
-
         cell.textContent = "?";
-
     }
 
     boardElement.appendChild(cell);
@@ -385,17 +353,10 @@ for (let i = 0; i < 25; i++) {
 }
 
 function checkWin() {
-
 for (const line of lines) {
-
-    if (
-        line.every(index =>
-            completed[index]
-        )
-    ) {
-
-        const cells =
-            document.querySelectorAll(".cell");
+if (line.every(index => completed[index])) {
+const cells =
+document.querySelectorAll(".cell");
 
         line.forEach(index => {
             cells[index].classList.add("win");
@@ -417,14 +378,7 @@ return false;
 }
 
 function newGame() {
-
-document.getElementById("game").style.display =
-    "none";
-
-document.getElementById("setup").style.display =
-    "block";
-
-document.getElementById("gameStatus").textContent =
-    "";
-
+document.getElementById("game").style.display = "none";
+document.getElementById("setup").style.display = "block";
+document.getElementById("gameStatus").textContent = "";
 }
