@@ -1,0 +1,233 @@
+:root {
+    --bg:#120b0f;
+    --panel:#21151b;
+    --panel-dark:#170e13;
+    --accent:#e85a7a;
+    --accent-bright:#ff8fab;
+    --text:#f8e9ee;
+    --muted:#bda5ad;
+    --marked:#542333;
+    --border:#49303a;
+}
+
+* {
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body {
+    font-family:system-ui,-apple-system,sans-serif;
+    background:
+        radial-gradient(circle at top,#3a1725,#120b0f 65%);
+    color:var(--text);
+    min-height:100dvh;
+    padding:20px 14px;
+}
+
+.app {
+    width:100%;
+    max-width:520px;
+    margin:auto;
+}
+
+h1 {
+    text-align:center;
+    font-size:clamp(1.7rem,7vw,2.2rem);
+    letter-spacing:1px;
+    color:var(--accent-bright);
+    margin-bottom:8px;
+}
+
+.subtitle {
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:28px;
+}
+
+.player-setup {
+    display:grid;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.player-box {
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
+}
+
+.player-box h2 {
+    font-size:1rem;
+    color:var(--accent-bright);
+    margin-bottom:12px;
+}
+
+input,
+select {
+    width:100%;
+    padding:13px;
+    margin-top:8px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--panel-dark);
+    color:var(--text);
+    font:inherit;
+}
+
+button {
+    width:100%;
+    border:0;
+    border-radius:14px;
+    padding:15px;
+    font:inherit;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.primary-button {
+    background:var(--accent);
+    color:white;
+    font-size:1.1rem;
+}
+
+.turn-display {
+    text-align:center;
+    margin-bottom:18px;
+}
+
+.turn-display p {
+    color:var(--muted);
+    font-size:.8rem;
+    letter-spacing:2px;
+}
+
+.turn-display h2 {
+    color:var(--accent-bright);
+    margin-top:5px;
+}
+
+.board {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:5px;
+    width:100%;
+    aspect-ratio:1;
+}
+
+.cell {
+    background:var(--panel);
+    border:2px solid var(--border);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:clamp(.75rem,3vw,1rem);
+    font-weight:700;
+    color:var(--muted);
+    user-select:none;
+}
+
+.cell.selected {
+    border-color:var(--accent-bright);
+    box-shadow:0 0 15px rgba(232,90,122,.7);
+    background:#3b1a27;
+}
+
+.cell.completed {
+    background:var(--marked);
+    border-color:var(--accent);
+    color:var(--accent-bright);
+}
+
+.cell.skipped {
+    background:#181116;
+    border-color:#35252c;
+    color:#69545d;
+}
+
+.prompt-area {
+    background:var(--panel-dark);
+    border:2px solid var(--accent);
+    border-radius:18px;
+    padding:22px;
+    margin-top:20px;
+    text-align:center;
+    min-height:150px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.prompt-label {
+    color:var(--accent-bright);
+    font-size:.8rem;
+    letter-spacing:2px;
+    margin-bottom:12px;
+}
+
+.prompt-hidden {
+    font-size:3rem;
+    font-weight:700;
+    color:var(--accent-bright);
+}
+
+#promptText:not(.prompt-hidden) {
+    font-size:1.15rem;
+    line-height:1.5;
+    color:var(--text);
+}
+
+.complete-button {
+    background:var(--accent);
+    color:white;
+    margin-top:14px;
+}
+
+.skip-button {
+    background:transparent;
+    border:2px solid var(--border);
+    color:var(--muted);
+    margin-top:10px;
+}
+
+.draw-button {
+    background:var(--accent-bright);
+    color:#250f18;
+    font-size:1.1rem;
+    margin-top:14px;
+}
+
+.game-status {
+    text-align:center;
+    min-height:28px;
+    margin-top:14px;
+    color:var(--accent-bright);
+    font-weight:700;
+}
+
+.new-game-button {
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--muted);
+    margin-top:18px;
+}
+
+@media (max-width:380px) {
+
+    body {
+        padding:15px 10px;
+    }
+
+    .board {
+        gap:3px;
+    }
+
+    .cell {
+        border-radius:6px;
+        font-size:.68rem;
+    }
+
+}
