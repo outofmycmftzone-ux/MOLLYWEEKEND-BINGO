@@ -24,47 +24,54 @@ const lines = [
 
 let prompts = [];
 let promptsLoaded = false;
-let promptsError = false;
 
 const PROMPTS_URL = "https://outofmycmftzone-ux.github.io/MOLLYWEEKEND-BINGO/prompts.json";
 
-async function loadPrompts() {
-try {
-const response = await fetch(PROMPTS_URL + "?t=" + Date.now(), {
-cache: "no-store"
+const promptsReady = fetch(PROMPTS_URL + "?version=" + Date.now(), {
+cache: "reload"
+})
+.then(response => {
+if (!response.ok) {
+throw new Error("HTTP " + response.status);
+}
+
+return response.json();
+
+})
+.then(data => {
+if (!Array.isArray(data) || data.length === 0) {
+throw new Error("Invalid prompts file");
+}
+
+prompts = data;
+promptsLoaded = true;
+
+console.log("PROMPTS LOADED:", prompts.length);
+
+return prompts;
+
+})
+.catch(error => {
+console.error("PROMPTS FAILED:", error);
+promptsLoaded = false;
+throw error;
 });
 
-    if (!response.ok) {
-        throw new Error("HTTP " + response.status);
-    }
+async function startGame() {
 
-    const data = await response.json();
-
-    if (!Array.isArray(data) || data.length === 0) {
-        throw new Error("Invalid prompts data");
-    }
-
-    prompts = data;
-    promptsLoaded = true;
-    promptsError = false;
-
-    console.log("Loaded prompts:", prompts.length);
-} catch (error) {
-    console.error("Prompt loading error:", error);
-    promptsLoaded = false;
-    promptsError = true;
-}
-
-}
-
-loadPrompts();
-
-function startGame() {
 const name1 =
-document.getElementById("player1Name").value.trim() || "Player 1";
+    document.getElementById("player1Name").value.trim() || "Player 1";
 
 const name2 =
     document.getElementById("player2Name").value.trim() || "Player 2";
+
+try {
+    await promptsReady;
+} catch (error) {
+    document.getElementById("gameStatus").textContent =
+        "Unable to load prompts. Please reload the game.";
+    return;
+}
 
 player1 = {
     name: name1
@@ -92,16 +99,8 @@ document.getElementById("promptText").className = "prompt-hidden";
 document.getElementById("promptButtons").style.display = "none";
 document.getElementById("drawButton").style.display = "block";
 
-if (promptsLoaded) {
-    document.getElementById("gameStatus").textContent =
-        prompts.length + " prompts loaded";
-} else if (promptsError) {
-    document.getElementById("gameStatus").textContent =
-        "Prompt loading failed. Reload the page.";
-} else {
-    document.getElementById("gameStatus").textContent =
-        "Loading prompts...";
-}
+document.getElementById("gameStatus").textContent =
+    prompts.length + " prompts loaded";
 
 }
 
@@ -226,11 +225,8 @@ return prompt;
 function drawPrompt() {
 if (!promptsLoaded) {
 document.getElementById("gameStatus").textContent =
-promptsError
-? "Prompt loading failed. Reload the page."
-: "Prompts are still loading...";
-
-    return;
+"Prompts are still loading...";
+return;
 }
 
 if (currentSquare !== -1) {
