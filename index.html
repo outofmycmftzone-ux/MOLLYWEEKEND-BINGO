@@ -31,11 +31,6 @@ Two players. One card. One goal.
 
 <input id="player1Name" type="text" placeholder="Name">
 
-<select id="player1Gender">
-<option value="male">Male</option>
-<option value="female">Female</option>
-</select>
-
 </div>
 
 <div class="player-box">
@@ -43,11 +38,6 @@ Two players. One card. One goal.
 <h2>PLAYER 2</h2>
 
 <input id="player2Name" type="text" placeholder="Name">
-
-<select id="player2Gender">
-<option value="female">Female</option>
-<option value="male">Male</option>
-</select>
 
 </div>
 
@@ -59,7 +49,6 @@ START GAME
 
 </div>
 
-
 <div id="game" style="display:none;">
 
 <div class="turn-display">
@@ -70,9 +59,7 @@ START GAME
 
 </div>
 
-
 <div class="board" id="board"></div>
-
 
 <div id="promptArea" class="prompt-area">
 
@@ -86,7 +73,6 @@ PROMPT
 
 </div>
 
-
 <div id="promptButtons" style="display:none;">
 
 <button class="complete-button" onclick="completeTask()">
@@ -99,14 +85,11 @@ PROMPT
 
 </div>
 
-
 <button id="drawButton" class="draw-button" onclick="drawPrompt()">
 🎴 DRAW PROMPT
 </button>
 
-
 <div id="gameStatus" class="game-status"></div>
-
 
 <button class="new-game-button" onclick="newGame()">
 NEW GAME
@@ -116,21 +99,14 @@ NEW GAME
 
 </div>
 
-
 <script src="script.js"></script>
 
 <script>
-
 if ("serviceWorker" in navigator) {
-
 window.addEventListener("load", function() {
-
 navigator.serviceWorker.register("service-worker.js");
-
 });
-
 }
-
 </script>
 
 </body>
