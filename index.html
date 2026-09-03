@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -8,21 +9,105 @@
 <title>Spicy Couples Bingo</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
-</head><body><div class="app"><h1>🔥 SPICY COUPLES BINGO</h1><div id="setup"><p class="subtitle">
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>🔥 SPICY COUPLES BINGO</h1>
+
+<div id="setup">
+
+<p class="subtitle">
 Two players. One card. One goal.
-</p><div class="player-setup"><div class="player-box"><h2>PLAYER 1</h2><input id="player1Name" type="text" placeholder="Name"></div><div class="player-box"><h2>PLAYER 2</h2><input id="player2Name" type="text" placeholder="Name"></div></div><button class="primary-button" onclick="startGame()">
+</p>
+
+<div class="player-setup">
+
+<div class="player-box">
+
+<h2>PLAYER 1</h2>
+
+<input id="player1Name" type="text" placeholder="Name">
+
+</div>
+
+<div class="player-box">
+
+<h2>PLAYER 2</h2>
+
+<input id="player2Name" type="text" placeholder="Name">
+
+</div>
+
+</div>
+
+<button class="primary-button" onclick="startGame()">
 START GAME
-</button></div><div id="game" style="display:none;"><div class="turn-display"><p>CURRENT TURN</p><h2 id="currentPlayer"></h2></div><div class="board" id="board"></div><div id="promptArea" class="prompt-area"><p class="prompt-label">
+</button>
+
+</div>
+
+<div id="game" style="display:none;">
+
+<div class="turn-display">
+
+<p>CURRENT TURN</p>
+
+<h2 id="currentPlayer"></h2>
+
+</div>
+
+<div class="board" id="board"></div>
+
+<div id="promptArea" class="prompt-area">
+
+<p class="prompt-label">
 PROMPT
-</p><div id="promptText" class="prompt-hidden">
+</p>
+
+<div id="promptText" class="prompt-hidden">
 ?
-</div></div><div id="promptButtons" style="display:none;"><button class="complete-button" onclick="completeTask()">
+</div>
+
+</div>
+
+<div id="promptButtons" style="display:none;">
+
+<button class="complete-button" onclick="completeTask()">
 ✅ COMPLETED TASK
-</button><button class="skip-button" onclick="skipTask()">
+</button>
+
+<button class="skip-button" onclick="skipTask()">
 ⏭️ SKIP THIS CARD
-</button></div><button id="drawButton" class="draw-button" onclick="drawPrompt()">
+</button>
+
+</div>
+
+<button id="drawButton" class="draw-button" onclick="drawPrompt()">
 🎴 DRAW PROMPT
-</button><div id="gameStatus" class="game-status"></div><button class="new-game-button" onclick="newGame()">
+</button>
+
+<div id="gameStatus" class="game-status"></div>
+
+<button class="new-game-button" onclick="newGame()">
 NEW GAME
-</button></div></div><script src="script.js?v=105"></script></body>
+</button>
+
+</div>
+
+</div>
+
+<script src="script.js?v=11"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function() {
+        navigator.serviceWorker.register("service-worker.js?v=11");
+    });
+}
+</script>
+
+</body>
 </html>
