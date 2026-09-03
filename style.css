@@ -148,6 +148,24 @@ button {
     color:#69545d;
 }
 
+.cell.win {
+    background:#8f2445;
+    border-color:#ffb3c6;
+    color:#ffffff;
+    box-shadow:0 0 18px rgba(255,143,171,.9);
+    animation:bingoPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes bingoPulse {
+    from {
+        transform:scale(1);
+    }
+
+    to {
+        transform:scale(1.06);
+    }
+}
+
 .prompt-area {
     background:var(--panel-dark);
     border:2px solid var(--accent);
