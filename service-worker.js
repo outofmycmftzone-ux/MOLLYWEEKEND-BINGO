@@ -1,4 +1,4 @@
-const CACHE_NAME = "spicy-couples-bingo-v11";
+const CACHE_NAME = "spicy-couples-bingo-v12";
 
 const FILES = [
     "./",
