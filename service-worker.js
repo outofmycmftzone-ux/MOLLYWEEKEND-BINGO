@@ -1,4 +1,4 @@
-const CACHE_NAME = "spicy-couples-bingo-v7";
+const CACHE_NAME = "spicy-couples-bingo-v8";
 
 const FILES = [
 "./",
@@ -32,17 +32,38 @@ keys
 });
 
 self.addEventListener("fetch", event => {
-if (new URL(event.request.url).pathname.endsWith("/prompts.json")) {
-event.respondWith(
-fetch(event.request, {
-cache: "no-store"
-})
-.then(response => {
-return response;
-})
-.catch(() => caches.match(event.request))
-);
-return;
+const url = new URL(event.request.url);
+
+if (url.pathname.endsWith("/prompts.json")) {
+    event.respondWith(
+        fetch(event.request, {
+            cache: "no-store"
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+}
+
+if (
+    url.pathname.endsWith("/script.js") ||
+    url.pathname.endsWith("/index.html")
+) {
+    event.respondWith(
+        fetch(event.request, {
+            cache: "no-store"
+        })
+        .then(response => {
+            const copy = response.clone();
+
+            caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, copy);
+            });
+
+            return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
 }
 
 event.respondWith(
@@ -56,9 +77,7 @@ event.respondWith(
 
             return response;
         })
-        .catch(() =>
-            caches.match(event.request)
-        )
+        .catch(() => caches.match(event.request))
 );
 
 });
