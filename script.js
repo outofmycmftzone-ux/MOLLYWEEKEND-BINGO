@@ -2,7 +2,6 @@ let player1 = {};
 let player2 = {};
 
 let currentPlayer = 0;
-let board = [];
 let completed = new Array(25).fill(false);
 let currentSquare = -1;
 let currentPrompt = null;
@@ -23,15 +22,18 @@ const lines = [
     [4,8,12,16,20]
 ];
 
+let prompts = [];
+
 fetch("prompts.json")
 .then(response => {
     if (!response.ok) {
         throw new Error("Prompts failed to load");
     }
+
     return response.json();
 })
 .then(data => {
-    window.prompts = data;
+    prompts = data;
 })
 .catch(error => {
     console.error(error);
@@ -46,18 +48,14 @@ function startGame() {
         document.getElementById("player2Name").value.trim() || "Player 2";
 
     player1 = {
-        name:name1,
-        gender:document.getElementById("player1Gender").value
+        name: name1
     };
 
     player2 = {
-        name:name2,
-        gender:document.getElementById("player2Gender").value
+        name: name2
     };
 
     currentPlayer = 0;
-
-    board = new Array(25).fill(false);
     completed = new Array(25).fill(false);
     currentSquare = -1;
     currentPrompt = null;
@@ -78,6 +76,7 @@ function startGame() {
 }
 
 function getCurrentPlayer() {
+
     return currentPlayer === 0 ? player1 : player2;
 }
 
@@ -92,6 +91,7 @@ function getAvailableSquares() {
     const available = [];
 
     for (let i = 0; i < 25; i++) {
+
         if (!completed[i]) {
             available.push(i);
         }
@@ -113,9 +113,11 @@ function getLineProgress(index) {
         let count = 0;
 
         line.forEach(square => {
+
             if (completed[square]) {
                 count++;
             }
+
         });
 
         if (count > highest) {
@@ -135,7 +137,7 @@ function getSquareWeight(index) {
     }
 
     if (progress === 3) {
-        return 0.2;
+        return 0.20;
     }
 
     if (progress === 2) {
@@ -159,10 +161,8 @@ function chooseSquare() {
 
         const weight = getSquareWeight(index);
 
-        const copies = Math.max(
-            1,
-            Math.round(weight * 100)
-        );
+        const copies =
+            Math.max(1, Math.round(weight * 100));
 
         for (let i = 0; i < copies; i++) {
             weighted.push(index);
@@ -174,52 +174,28 @@ function chooseSquare() {
     ];
 }
 
-function getPromptPool() {
-
-    const player = getCurrentPlayer();
-
-    if (!window.prompts) {
-        return [];
-    }
-
-    return window.prompts.filter(prompt => {
-
-        if (usedPrompts.includes(prompt.id)) {
-            return false;
-        }
-
-        return (
-            prompt.target === "both" ||
-            prompt.target === player.gender
-        );
-    });
-}
-
 function choosePrompt() {
 
-    let pool = getPromptPool();
-
-    if (pool.length === 0) {
-
-        usedPrompts = [];
-
-        pool = window.prompts.filter(prompt => {
-
-            const player = getCurrentPlayer();
-
-            return (
-                prompt.target === "both" ||
-                prompt.target === player.gender
-            );
-        });
-    }
-
-    if (pool.length === 0) {
+    if (prompts.length === 0) {
         return null;
     }
 
+    let availablePrompts =
+        prompts.filter(prompt =>
+            !usedPrompts.includes(prompt.id)
+        );
+
+    if (availablePrompts.length === 0) {
+        usedPrompts = [];
+        availablePrompts = [...prompts];
+    }
+
     const prompt =
-        pool[Math.floor(Math.random() * pool.length)];
+        availablePrompts[
+            Math.floor(
+                Math.random() * availablePrompts.length
+            )
+        ];
 
     usedPrompts.push(prompt.id);
 
@@ -228,9 +204,11 @@ function choosePrompt() {
 
 function drawPrompt() {
 
-    if (!window.prompts) {
+    if (prompts.length === 0) {
+
         document.getElementById("gameStatus").textContent =
             "Prompts are still loading.";
+
         return;
     }
 
@@ -261,8 +239,11 @@ function drawPrompt() {
     promptText.textContent = prompt.text;
     promptText.className = "";
 
-    document.getElementById("promptButtons").style.display = "block";
-    document.getElementById("drawButton").style.display = "none";
+    document.getElementById("promptButtons").style.display =
+        "block";
+
+    document.getElementById("drawButton").style.display =
+        "none";
 }
 
 function completeTask() {
@@ -277,14 +258,19 @@ function completeTask() {
     currentPrompt = null;
 
     document.getElementById("promptText").textContent = "?";
-    document.getElementById("promptText").className = "prompt-hidden";
+    document.getElementById("promptText").className =
+        "prompt-hidden";
 
-    document.getElementById("promptButtons").style.display = "none";
+    document.getElementById("promptButtons").style.display =
+        "none";
 
     renderBoard();
 
     if (checkWin()) {
-        document.getElementById("drawButton").style.display = "none";
+
+        document.getElementById("drawButton").style.display =
+            "none";
+
         return;
     }
 
@@ -293,7 +279,8 @@ function completeTask() {
 
     updateTurn();
 
-    document.getElementById("drawButton").style.display = "block";
+    document.getElementById("drawButton").style.display =
+        "block";
 }
 
 function skipTask() {
@@ -306,9 +293,11 @@ function skipTask() {
     currentPrompt = null;
 
     document.getElementById("promptText").textContent = "?";
-    document.getElementById("promptText").className = "prompt-hidden";
+    document.getElementById("promptText").className =
+        "prompt-hidden";
 
-    document.getElementById("promptButtons").style.display = "none";
+    document.getElementById("promptButtons").style.display =
+        "none";
 
     renderBoard();
 
@@ -317,7 +306,8 @@ function skipTask() {
 
     updateTurn();
 
-    document.getElementById("drawButton").style.display = "block";
+    document.getElementById("drawButton").style.display =
+        "block";
 }
 
 function renderBoard() {
@@ -335,15 +325,19 @@ function renderBoard() {
         cell.className = "cell";
 
         if (completed[i]) {
+
             cell.classList.add("completed");
             cell.textContent = "✓";
-        }
-        else if (i === currentSquare) {
+
+        } else if (i === currentSquare) {
+
             cell.classList.add("selected");
             cell.textContent = "!";
-        }
-        else {
+
+        } else {
+
             cell.textContent = "?";
+
         }
 
         boardElement.appendChild(cell);
@@ -383,8 +377,12 @@ function checkWin() {
 
 function newGame() {
 
-    document.getElementById("game").style.display = "none";
-    document.getElementById("setup").style.display = "block";
+    document.getElementById("game").style.display =
+        "none";
 
-    document.getElementById("gameStatus").textContent = "";
+    document.getElementById("setup").style.display =
+        "block";
+
+    document.getElementById("gameStatus").textContent =
+        "";
 }
